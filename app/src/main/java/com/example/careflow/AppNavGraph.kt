@@ -5,24 +5,48 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.careflow.SplashScreen
+import com.careflow.ui.screens.LoginScreen
+import com.careflow.ui.screens.ForgotPasswordScreen
+import com.careflow.ui.screens.AuthorizationScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "splash" // Start at splash screen
+        startDestination = "splash"
     ) {
+
         composable("splash") {
-            // Pass a lambda for what happens when splash finishes
-            SplashScreen {
-                // After splash, you could navigate somewhere else
-                // For now, we'll just stay on splash or you can navigate to "main"
-                // Example:
-                // navController.navigate("main") { popUpTo("splash") { inclusive = true } }
-            }
+            SplashScreen(
+                onSplashFinished = {
+                    navController.navigate("login") {
+                        popUpTo("splash") { inclusive = true }
+                    }
+                }
+            )
         }
 
-        // Add more screens as you build the app, e.g.:
-        // composable("main") { MainScreen() }
+        composable("login") {
+            LoginScreen(
+                onForgotPassword = { navController.navigate("forgot_password") },
+                onCreateAccount = { navController.navigate("create_account") }
+            )
+        }
+
+        composable("forgot_password") {
+            ForgotPasswordScreen(
+                onBack = { navController.popBackStack() },
+                onSubmit = { navController.navigate("authorization") }
+            )
+        }
+
+        composable("authorization") {
+            AuthorizationScreen(
+                onBack = { navController.popBackStack() },
+                onSubmit = {
+                    // TODO: Navigate to Reset Password Screen
+                }
+            )
+        }
     }
 }
